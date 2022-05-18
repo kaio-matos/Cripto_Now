@@ -2,7 +2,11 @@
     <span class="text-8xl primary-font text-red-500">
         {{ currentPrice.toLocaleString(
                 'pt-br',
-                { style: 'currency', currency: 'BRL' }
+                {
+                    style: 'currency',
+                    currency: 'BRL',
+                    maximumFractionDigits: 5
+                }
             )
         }}
     </span>
