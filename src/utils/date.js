@@ -6,7 +6,7 @@
  */
 function convertDate(date) {
     let days = date.getDate()
-    let month = date.getMonth()
+    let month = date.getMonth() + 1
     let year = date.getFullYear()
 
     days = days <= 9 ? `0${days}` : days
