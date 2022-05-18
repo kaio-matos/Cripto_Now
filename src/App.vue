@@ -67,8 +67,17 @@ export default {
       }
     }
 
+    function updateCurrentCriptoNow() {
+      currentDateTime.value = undefined
+      updateCripto(currentCripto.value)
+    }
+
     async function updateDateTime(pickedDateTime) {
-      if (!pickedDateTime) return updateCurrentCriptoNow()
+      if (!pickedDateTime) {
+        updateCurrentCriptoNow()
+        return api.startInterval(updateCurrentCriptoNow)
+      }
+      api.endInterval()
       currentDateTime.value = pickedDateTime
       const date = new Date(pickedDateTime)
 
@@ -81,12 +90,8 @@ export default {
       }
     }
 
-    function updateCurrentCriptoNow() {
-      currentDateTime.value = undefined
-      updateCripto(currentCripto.value)
-    }
-
     updateCripto(currentCripto.value)
+    api.startInterval(updateCurrentCriptoNow)
 
     return {
       convertDate,

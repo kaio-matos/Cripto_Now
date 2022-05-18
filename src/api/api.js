@@ -5,6 +5,29 @@ const MINUTE = SECOND * 60
 
 class Api {
     url = "https://api.coingecko.com/api/v3"
+    interval
+
+    /**
+     * Starts an javascript interval with the passed callback.
+     * 
+     * By default the time is 10 * SECOND (1000).
+     * 
+     * This means that will trigger the cb 6 times per minute.
+     * 
+     * A good amount of requests to don't reach the limit of the API.
+     * @param {Function} cb - Example - () => { makeRequest() }
+     * @param {Number} time - Default - 10
+     */
+    startInterval(cb, time = 10) {
+        this.interval = setInterval(cb, time * SECOND)
+    }
+
+    /**
+     * Clear the started interval
+     */
+    endInterval() {
+        clearInterval(this.interval)
+    }
 
     simple = {
         uri: `${this.url}/simple`,
