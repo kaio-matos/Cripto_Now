@@ -1,3 +1,5 @@
+import { isValidDate } from "@/utils/date"
+
 const SECOND = 1000
 const MINUTE = SECOND * 60
 
@@ -38,11 +40,7 @@ class Api {
          * @param {Number} returnDays
          * - Default: 30 
          * 
-         * @returns {{
-         *      prices: [Number, Number][]
-         *      market_caps: [Number, Number][]
-         *      total_volumes: [Number, Number][]
-         * }}
+         * @returns {[Number, Number][]}
          * -------------------------------------------------------------
          * Historical market data with granuality auto:
          * 
@@ -52,11 +50,11 @@ class Api {
          * 
          * above 90 days from query time = daily data (00:00 UTC)
          */
-        async get_history(criptoId, currency = 'brl', returnDays = 30) {
+        async get_history(criptoId, returnDays = 30, currency = 'brl') {
             if (!criptoId) return
-            const res = await fetch(`${this.uri}/${criptoId}/market_chart?vs_currency=${currency}&days=${returnDays}`)
+            const res = await fetch(`${this.uri}/${criptoId}/market_chart?vs_currency=${currency}&days=${returnDays}&interval=daily`)
             const data = await res.json()
-            return data
+            return data.prices
         },
 
         /**
@@ -69,11 +67,7 @@ class Api {
          * @param {String} currency
          * - Default: 'brl'
          * 
-         * @returns {{
-         *      prices: [Number, Number][];
-         *      market_caps: [Number, Number][];
-         *      total_volumes: [Number, Number][];
-         * }}
+         * @returns { [Number, Number][] }
          * -------------------------------------------------------------
          * Historical market data with granuality auto:
          * 
@@ -90,10 +84,12 @@ class Api {
 
             const res = await fetch(`${this.uri}/${criptoId}/market_chart/range?vs_currency=${currency}&from=${fromUnix}&to=${toUnix}`)
             const data = await res.json()
-            return data
+            return data.prices
         },
 
         /**
+         * Function get the nearest price from the input date of a cripto
+         * 
          * @param {String} criptoId
          * - Example: 'bitcoin'
          * 
@@ -106,6 +102,7 @@ class Api {
          * @returns {{date: number, price: number}}
          */
         async get_specific_time(criptoId, date, currency = 'brl') {
+            if (!criptoId || !isValidDate(date)) return
             const range = 60 * 24
             const timeBefore = new Date(date.getTime() - MINUTE * range)
             const timeLater = new Date(date.getTime() + MINUTE * range)
@@ -116,7 +113,7 @@ class Api {
                     to: timeLater
                 }, currency)
 
-            const approximately = data.prices.reduce((previousPrice, currentPrice) => {
+            const approximately = data.reduce((previousPrice, currentPrice) => {
                 const [prevDate] = currentPrice
                 const [currDate] = previousPrice
                 if (Math.abs(currDate - date.getTime()) > Math.abs(prevDate - date.getTime()))
