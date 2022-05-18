@@ -22,6 +22,7 @@
       </section>
     </div>
 
+    <message-balloon :message="error" />
   </div>
 </template>
 
@@ -30,10 +31,11 @@ import MainHeader from '@/components/MainHeader.vue'
 import CriptoSelector from '@/components/CriptoSelector.vue'
 import PriceHolder from '@/components/PriceHolder.vue'
 import DateTimePicker from '@/components/DateTimePicker.vue'
+import MessageBalloon from '@/components/MessageBalloon.vue'
 import GraphView from '@/components/GraphView'
 import { convertDate } from '@/utils/date'
 import { api } from '@/api/api'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 export default {
   name: 'App',
@@ -42,25 +44,41 @@ export default {
     CriptoSelector,
     PriceHolder,
     DateTimePicker,
-    GraphView
+    GraphView,
+    MessageBalloon
   },
   setup() {
     let currentCripto = ref('bitcoin')
     let currentDateTime = ref()
     let currentCriptoPrice = ref(0)
     let currentCriptoHistory = ref([])
+    let error = reactive({ message: '', type: 'error' });
 
     async function updateCripto(pickedCripto) {
       currentCripto.value = pickedCripto
-      currentCriptoPrice.value = await api.simple.current_price(pickedCripto)
-      currentCriptoHistory.value = await api.coins.get_history(pickedCripto)
+      if (currentDateTime.value) return updateDateTime(currentDateTime.value)
+
+      try {
+        currentCriptoPrice.value = await api.simple.current_price(pickedCripto)
+        currentCriptoHistory.value = await api.coins.get_history(pickedCripto)
+      } catch (err) {
+        error.message = err.message
+        console.error(err)
+      }
     }
 
     async function updateDateTime(pickedDateTime) {
       currentDateTime.value = pickedDateTime
       const date = new Date(pickedDateTime)
-      const res = await api.coins.get_specific_time(currentCripto.value, date)
-      if (res) currentCriptoPrice.value = res.price
+
+      try {
+        const res = await api.coins.get_specific_time(currentCripto.value, date)
+
+        if (res) currentCriptoPrice.value = res.price
+      } catch (err) {
+        error.message = err.message
+        console.error(err)
+      }
     }
 
     updateCripto(currentCripto.value)
@@ -73,6 +91,7 @@ export default {
       currentCriptoHistory,
       currentCripto,
       currentDateTime,
+      error
     }
   }
 }
