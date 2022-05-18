@@ -1,7 +1,9 @@
 <template>
-    <vue-ctk-date-time-picker :max-date="new Date().toISOString()" label="Select specific date & time" v-model="dateRef"
-        noClearButton no-button-now locale="en">
-    </vue-ctk-date-time-picker>
+    <div v-bind="$attrs">
+        <vue-ctk-date-time-picker :max-date="new Date().toISOString()" label="Select specific date & time"
+            v-model="dateRef" noClearButton no-button-now locale="en">
+        </vue-ctk-date-time-picker>
+    </div>
 </template>
 
 <script>
