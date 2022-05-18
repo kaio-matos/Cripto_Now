@@ -68,12 +68,12 @@ export default {
     }
 
     async function updateDateTime(pickedDateTime) {
+      if (!pickedDateTime) return updateCurrentCriptoNow()
       currentDateTime.value = pickedDateTime
       const date = new Date(pickedDateTime)
 
       try {
         const res = await api.coins.get_specific_time(currentCripto.value, date)
-
         if (res) currentCriptoPrice.value = res.price
       } catch (err) {
         error.message = err.message
@@ -81,11 +81,17 @@ export default {
       }
     }
 
+    function updateCurrentCriptoNow() {
+      currentDateTime.value = undefined
+      updateCripto(currentCripto.value)
+    }
+
     updateCripto(currentCripto.value)
 
     return {
       convertDate,
       updateCripto,
+      updateCurrentCriptoNow,
       updateDateTime,
       currentCriptoPrice,
       currentCriptoHistory,
