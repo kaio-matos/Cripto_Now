@@ -13,17 +13,13 @@ class Api {
          * 
          * @param {String} criptoId 
          * @param {String} currency 
-         * @returns {{
-         *    criptoId: {
-         *        currency: Number
-         *    }
-         * }}
+         * @returns {{Number}}
          */
         async current_price(criptoId, currency = 'brl') {
             if (!criptoId) return
             const res = await fetch(`${this.uri}/price?ids=${criptoId}&vs_currencies=${currency}`)
             const data = await res.json()
-            return data
+            return data[criptoId][currency]
         }
     }
 
