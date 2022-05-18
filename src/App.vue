@@ -2,6 +2,7 @@
   <div>
     <main-header />
     <div class="m-auto mt-[9rem] px-10 max-w-screen-xl flex gap-5">
+      <!-- Pickers and price section -->
       <section class="flex flex-col flex-1 justify-between">
         <div>
           <cripto-selector class="w-2/3 mb-5" @update:cripto="updateCripto" />
@@ -14,6 +15,7 @@
         </div>
       </section>
 
+      <!-- Graphic visualization section -->
       <section class="flex-1 ">
         <p>Price of 30 days ago</p>
         <graph-view :history="currentCriptoHistory" />
@@ -57,7 +59,7 @@ export default {
     async function updateDateTime(pickedDateTime) {
       currentDateTime.value = pickedDateTime
       const date = new Date(pickedDateTime)
-      const res = await api.coins.get_specific_time(pickedDateTime, date)
+      const res = await api.coins.get_specific_time(currentCripto.value, date)
       if (res) currentCriptoPrice.value = res.price
     }
 
