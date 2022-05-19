@@ -57,6 +57,10 @@ screen without needing to refresh the browser.
 
 ![image](README/state-0.png)
 
+## Resultado final
+
+![image](README/state-1.png)
+
 <br>
 <hr>
 
