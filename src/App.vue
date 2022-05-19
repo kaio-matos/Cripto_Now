@@ -18,7 +18,8 @@
                 `Nearest price at ${convertDate(new Date(currentCripto.dateTime))}` :
                 "Price now"
             }}</p>
-          <price-holder :currentPrice="currentCripto.price" />
+          <main-loading v-if="loading" />
+          <price-holder v-else :currentPrice="currentCripto.price" />
         </div>
       </section>
 
@@ -40,9 +41,10 @@ import PriceHolder from '@/components/PriceHolder.vue'
 import DateTimePicker from '@/components/DateTimePicker.vue'
 import MessageBalloon from '@/components/MessageBalloon.vue'
 import GraphView from '@/components/GraphView'
+import MainLoading from '@/components/MainLoading'
 import { convertDate } from '@/utils/date'
 import { api } from '@/api/api'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
 export default {
   name: 'App',
@@ -52,7 +54,8 @@ export default {
     PriceHolder,
     DateTimePicker,
     GraphView,
-    MessageBalloon
+    MessageBalloon,
+    MainLoading
   },
   setup() {
     const currentCripto = reactive({
@@ -62,6 +65,7 @@ export default {
       history: [],
     })
     const error = reactive({ message: '', type: 'error' });
+    const loading = ref(false)
 
     /**
      * Update currentPrice based on date and stops requestNewestPrice.
@@ -81,12 +85,14 @@ export default {
       const date = new Date(pickedDateTime)
 
       try {
+        loading.value = true
         const res = await api.coins.get_specific_time(currentCripto.cripto, date)
         if (res) currentCripto.price = res.price
       } catch (err) {
         error.message = err.message
         console.error(err)
       }
+      loading.value = false
     }
 
     /**
@@ -100,12 +106,14 @@ export default {
       if (currentCripto.dateTime) return updateDateTime(currentCripto.dateTime)
 
       try {
+        loading.value = true
         currentCripto.price = await api.simple.current_price(pickedCripto)
         currentCripto.history = await api.coins.get_history(pickedCripto)
       } catch (err) {
         error.message = err.message
         console.error(err)
       }
+      loading.value = false
     }
 
     function requestNewestPrice() {
@@ -120,7 +128,8 @@ export default {
       updateCripto,
       updateDateTime,
       currentCripto,
-      error
+      error,
+      loading
     }
   }
 }

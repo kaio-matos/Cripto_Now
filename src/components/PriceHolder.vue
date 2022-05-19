@@ -1,5 +1,5 @@
 <template>
-    <span class="text-4xl primary-font text-red-500
+    <span class="text-4xl primary-font text-red-500 transition-in
                  sm:text-7xl
                  md:text-7xl
                  lg:text-8xl">
