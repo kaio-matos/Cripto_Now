@@ -14,18 +14,18 @@
 
         <div class="mt-5">
           <p class="hidden lg:flex">
-            {{ currentDateTime ?
-                `Nearest price at ${convertDate(new Date(currentDateTime))}` :
+            {{ currentCripto.dateTime ?
+                `Nearest price at ${convertDate(new Date(currentCripto.dateTime))}` :
                 "Price now"
             }}</p>
-          <price-holder :currentPrice="currentCriptoPrice" />
+          <price-holder :currentPrice="currentCripto.price" />
         </div>
       </section>
 
       <!-- Graphic visualization section -->
       <section class="flex-1 mt-5">
         <p class="hidden md:flex lg:flex">Price of 30 days ago</p>
-        <graph-view :history="currentCriptoHistory" />
+        <graph-view :history="currentCripto.history" />
       </section>
     </div>
 
@@ -42,7 +42,7 @@ import MessageBalloon from '@/components/MessageBalloon.vue'
 import GraphView from '@/components/GraphView'
 import { convertDate } from '@/utils/date'
 import { api } from '@/api/api'
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 
 export default {
   name: 'App',
@@ -55,11 +55,13 @@ export default {
     MessageBalloon
   },
   setup() {
-    let currentCripto = ref('bitcoin')
-    let currentDateTime = ref()
-    let currentCriptoPrice = ref(0)
-    let currentCriptoHistory = ref([])
-    let error = reactive({ message: '', type: 'error' });
+    const currentCripto = reactive({
+      cripto: 'bitcoin',
+      dateTime: undefined,
+      price: 0,
+      history: [],
+    })
+    const error = reactive({ message: '', type: 'error' });
 
     /**
      * Update currentPrice based on date and stops requestNewestPrice.
@@ -71,16 +73,16 @@ export default {
      */
     async function updateDateTime(pickedDateTime) {
       if (!pickedDateTime) {
-        currentDateTime.value = undefined
+        currentCripto.dateTime = undefined
         return requestNewestPrice()
       }
       api.endInterval()
-      currentDateTime.value = pickedDateTime
+      currentCripto.dateTime = pickedDateTime
       const date = new Date(pickedDateTime)
 
       try {
-        const res = await api.coins.get_specific_time(currentCripto.value, date)
-        if (res) currentCriptoPrice.value = res.price
+        const res = await api.coins.get_specific_time(currentCripto.cripto, date)
+        if (res) currentCripto.price = res.price
       } catch (err) {
         error.message = err.message
         console.error(err)
@@ -94,12 +96,12 @@ export default {
      * @param {String} pickedCripto 
      */
     async function updateCripto(pickedCripto) {
-      currentCripto.value = pickedCripto
-      if (currentDateTime.value) return updateDateTime(currentDateTime.value)
+      currentCripto.cripto = pickedCripto
+      if (currentCripto.dateTime) return updateDateTime(currentCripto.dateTime)
 
       try {
-        currentCriptoPrice.value = await api.simple.current_price(pickedCripto)
-        currentCriptoHistory.value = await api.coins.get_history(pickedCripto)
+        currentCripto.price = await api.simple.current_price(pickedCripto)
+        currentCripto.history = await api.coins.get_history(pickedCripto)
       } catch (err) {
         error.message = err.message
         console.error(err)
@@ -107,8 +109,8 @@ export default {
     }
 
     function requestNewestPrice() {
-      updateCripto(currentCripto.value)
-      api.startInterval(() => updateCripto(currentCripto.value))
+      updateCripto(currentCripto.cripto)
+      api.startInterval(() => updateCripto(currentCripto.cripto))
     }
 
     requestNewestPrice()
@@ -117,10 +119,7 @@ export default {
       convertDate,
       updateCripto,
       updateDateTime,
-      currentCriptoPrice,
-      currentCriptoHistory,
       currentCripto,
-      currentDateTime,
       error
     }
   }
