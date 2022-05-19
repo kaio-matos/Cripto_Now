@@ -121,7 +121,7 @@ yarn global add serve
 
 Remova a configuração para o github-pages no arquivo vue.config.js
 
-```
+```js
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   publicPath: process.env.NODE_ENV === "production" ? "/Finished-Frontend-Technical-Test/" : "/", // Remova essa linha
