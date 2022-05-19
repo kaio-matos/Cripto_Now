@@ -112,7 +112,7 @@ npm run serve
 
 ### Produção 🚀
 
-Instale o pacote do npm 'serve' globalmente. Este pacote auxiliará a servir as páginas de forma estática, neste caso é apenas o index.html.
+Instale o pacote do npm 'serve' globalmente. Este pacote auxiliará a servir os arquivos e páginas de forma estática, neste caso é apenas o index.html.
 
 ```
 npm install -g serve
