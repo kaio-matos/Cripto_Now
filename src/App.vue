@@ -31,6 +31,12 @@
     </div>
 
     <message-balloon :message="error" />
+    <p class="text-center mt-5">
+      All the data comes from the
+      <a class="text-blue-500" href="https://www.coingecko.com">
+        CoinGecko API
+      </a>
+    </p>
   </div>
 </template>
 
@@ -103,8 +109,10 @@ export default {
      */
     async function updateCripto(pickedCripto) {
       currentCripto.cripto = pickedCripto
-      if (currentCripto.dateTime) return updateDateTime(currentCripto.dateTime)
-
+      if (currentCripto.dateTime) {
+        currentCripto.history = await api.coins.get_history(pickedCripto)
+        return updateDateTime(currentCripto.dateTime)
+      }
       try {
         loading.value = true
         currentCripto.price = await api.simple.current_price(pickedCripto)
