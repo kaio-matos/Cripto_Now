@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="transition-in">
     <main-header />
     <div class="flex flex-col m-auto mt-[2rem] px-5
                 lg:flex-row lg:px-10 lg:max-w-screen-xl lg:gap-5 lg:mt-[9rem]

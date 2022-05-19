@@ -5,3 +5,17 @@
 .secondary-font {
     font-family: "Bebas Neue";
 }
+
+.transition-in {
+    animation: transition-in 2000ms;
+}
+
+@keyframes transition-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
