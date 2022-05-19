@@ -19,6 +19,7 @@ class Api {
      * @param {Number} time - Default - 10
      */
     startInterval(cb, time = 10) {
+        clearInterval(this.interval)
         this.interval = setInterval(cb, time * SECOND)
     }
 

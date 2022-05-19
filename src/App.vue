@@ -61,28 +61,18 @@ export default {
     let currentCriptoHistory = ref([])
     let error = reactive({ message: '', type: 'error' });
 
-    async function updateCripto(pickedCripto) {
-      currentCripto.value = pickedCripto
-      if (currentDateTime.value) return updateDateTime(currentDateTime.value)
-
-      try {
-        currentCriptoPrice.value = await api.simple.current_price(pickedCripto)
-        currentCriptoHistory.value = await api.coins.get_history(pickedCripto)
-      } catch (err) {
-        error.message = err.message
-        console.error(err)
-      }
-    }
-
-    function updateCurrentCriptoNow() {
-      currentDateTime.value = undefined
-      updateCripto(currentCripto.value)
-    }
-
+    /**
+     * Update currentPrice based on date and stops requestNewestPrice.
+     * 
+     * Case pickedDateTime does not exist,
+     * update cripto to it's current price and requestNewestPrice.
+     * 
+     * @param {String} pickedDateTime 
+     */
     async function updateDateTime(pickedDateTime) {
       if (!pickedDateTime) {
-        updateCurrentCriptoNow()
-        return api.startInterval(updateCurrentCriptoNow)
+        currentDateTime.value = undefined
+        return requestNewestPrice()
       }
       api.endInterval()
       currentDateTime.value = pickedDateTime
@@ -97,13 +87,35 @@ export default {
       }
     }
 
-    updateCripto(currentCripto.value)
-    api.startInterval(updateCurrentCriptoNow)
+    /**
+     * Updates with criptoId.
+     * 
+     * Case some date is selected calls updateDateTime and returns. 
+     * @param {String} pickedCripto 
+     */
+    async function updateCripto(pickedCripto) {
+      currentCripto.value = pickedCripto
+      if (currentDateTime.value) return updateDateTime(currentDateTime.value)
+
+      try {
+        currentCriptoPrice.value = await api.simple.current_price(pickedCripto)
+        currentCriptoHistory.value = await api.coins.get_history(pickedCripto)
+      } catch (err) {
+        error.message = err.message
+        console.error(err)
+      }
+    }
+
+    function requestNewestPrice() {
+      updateCripto(currentCripto.value)
+      api.startInterval(() => updateCripto(currentCripto.value))
+    }
+
+    requestNewestPrice()
 
     return {
       convertDate,
       updateCripto,
-      updateCurrentCriptoNow,
       updateDateTime,
       currentCriptoPrice,
       currentCriptoHistory,
