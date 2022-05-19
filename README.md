@@ -119,6 +119,17 @@ npm install -g serve
 yarn global add serve
 ```
 
+Remova a configuração para o github-pages no arquivo vue.config.js
+
+```
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  publicPath: process.env.NODE_ENV === "production" ? "/Finished-Frontend-Technical-Test/" : "/", // Remova essa linha
+  transpileDependencies: true
+})
+
+```
+
 Faça o build da aplicação
 
 ```
@@ -126,4 +137,9 @@ yarn build
 npm run build
 ```
 
+Então execute o seguinte comando para abrir o servidor
+
+```
+serve dist
+```
 
