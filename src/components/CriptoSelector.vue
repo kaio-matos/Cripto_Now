@@ -1,6 +1,8 @@
 <template>
-  <select v-bind="$attrs" @change="changeCripto"
-    class="p-4 text-2xl text-neutral-600 cursor-pointer rounded border border-neutral-200">
+  <select v-bind="$attrs" @change="changeCripto" class="p-4 text-2xl text-neutral-600 cursor-pointer
+          rounded border border-neutral-200 outline-none
+          transition ease-in-out delay-150  hover:border-neutral-500 duration-300
+    ">
     <option value="" disabled selected>Choose a criptocurrency</option>
     <option selected value="bitcoin">Bitcoin</option>
     <option value="dacxi">DACXI</option>

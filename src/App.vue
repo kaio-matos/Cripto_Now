@@ -1,23 +1,30 @@
 <template>
   <div>
     <main-header />
-    <div class="m-auto mt-[9rem] px-10 max-w-screen-xl flex gap-5">
+    <div class="flex flex-col m-auto mt-[2rem] px-5
+                lg:flex-row lg:px-10 lg:max-w-screen-xl lg:gap-5 lg:mt-[9rem]
+                ">
       <!-- Pickers and price section -->
-      <section class="flex flex-col flex-1 justify-between">
+      <section class="flex flex-col flex-1 justify-between text-center items-center
+                      lg:text-left lg:items-start">
         <div>
-          <cripto-selector class="w-2/3 mb-5" @update:cripto="updateCripto" />
-          <date-time-picker class="w-2/3" @update:dateTime="updateDateTime"></date-time-picker>
+          <cripto-selector class="w-full mb-5" @update:cripto="updateCripto" />
+          <date-time-picker class="w-full" @update:dateTime="updateDateTime"></date-time-picker>
         </div>
 
-        <div>
-          <p>{{ currentDateTime ? `Nearest price at ${convertDate(new Date(currentDateTime))}` : "Price now" }}</p>
+        <div class="mt-5">
+          <p class="hidden lg:flex">
+            {{ currentDateTime ?
+                `Nearest price at ${convertDate(new Date(currentDateTime))}` :
+                "Price now"
+            }}</p>
           <price-holder :currentPrice="currentCriptoPrice" />
         </div>
       </section>
 
       <!-- Graphic visualization section -->
-      <section class="flex-1 ">
-        <p>Price of 30 days ago</p>
+      <section class="flex-1 mt-5">
+        <p class="hidden md:flex lg:flex">Price of 30 days ago</p>
         <graph-view :history="currentCriptoHistory" />
       </section>
     </div>

@@ -1,5 +1,8 @@
 <template>
-    <span class="text-8xl primary-font text-red-500">
+    <span class="text-4xl primary-font text-red-500
+                 sm:text-7xl
+                 md:text-7xl
+                 lg:text-8xl">
         {{ currentPrice.toLocaleString(
                 'pt-br',
                 {
