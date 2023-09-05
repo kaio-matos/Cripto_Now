@@ -1,6 +1,6 @@
 # Cripto_Now
 
-[Cripto_Now](https://kaio-matos.github.io/Finished-Frontend-Technical-Test/)
+[Cripto_Now](https://kaio-matos.github.io/Cripto_Now/)
 
 Para o desenvolvimento do aplicativo foi feita a leitura detalhada do que é pedido no PDF. Após a leitura, a primeira coisa que decidi fazer foi construir a prototipagem no figma de como ficaria a tela, algo simples para que durante o desenvolvimento eu pudesse me guiar.
 
